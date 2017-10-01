@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block main %}
+    {% if error_msg %}
+        <p>{{ error_msg }}</p>
+    {% endif %}
+{% for artcile in artcile_list %}
+<article class="post post-{{artcile.pk }}">
+    <header class="entry-header">
+        <h1 class="entry-title">
+            <a href="{{ artcile.get_absolute_url }}">{{ artcile.title }}</a>
+        </h1>
+        <div class="entry-meta">
+            <span class="post-category"><a href="#">{{ artcile.category.name }}</a></span>
+            <span class="post-date"><a href="#"><time class="entry-date" datetime="{{ artcile.create_time }}">{{ artcile.create_time }}</time></a></span>
+            <span class="post-author"><a href="#">{{ artcile.author }}</a></span>
+            <span class="comments-link"><a href="{{ artcile.get_absolute_url }}">{{ artcile.comment_set.all.count }} 评论</a></span>
+            <span class="views-count"><a href="{{ artcile.get_absolute_url }}">{{ artcile.views }} 阅读</a></span>
+        </div>
+    </header>
+    <div class="entry-content clearfix">
+        <p>{{ artcile.excerpt }}</p>
+        <div class="read-more cl-effect-14">
+            <a href="{{ artcile.get_absolute_url }}" class="more-link">继续阅读 <span class="meta-nav">→</span></a>
+        </div>
+    </div>
+</article>
+{% empty %}
+    <div class="no-post">暂时还没有发布的文章！</div>
+{% endfor %}
+
+                <!-- 简单分页效果
+                <div class="pagination-simple">
+                    <a href="#">上一页</a>
+                    <span class="current">第 6 页 / 共 11 页</span>
+                    <a href="#">下一页</a>
+                </div>
+                -->
+<div class="pagination">
+    <span>
+        {% if artcile_list.has_previous %}
+        <a href="?page={{ artcile_list.previous_page_number }}"></a>
+        {% endif %}
+    </span>
+    <ul>
+       {% for page_number in artcile_list.paginator.page_range %}
+           {% ifequal page_number artcile_list.number%}
+               <li class="current"><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+               {% else %}
+                <li><a href="?page={{ page_number }}">{{ page_number }}</a></li>
+
+           {% endifequal %}
+
+        {% endfor %}
+    </ul>
+    {% if artcile_list.has_next %}
+    <span><a href="?page={{ artcile_list.next_page_number }}"></a></span>
+    {% endif %}
+</div>
+
+{% endblock %}
